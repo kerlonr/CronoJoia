@@ -23,7 +23,7 @@
         }
 
         .timer {
-            font-size: 38rem;
+            font-size: 45rem;
             font-weight: bold;
             color: #000dff;
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
@@ -106,7 +106,7 @@
 
 <body>
     <div class="container">
-        <h1 class="timer" id="timer">00:00</h1>
+        <h1 class="timer" id="timer">0:00</h1>
         <div class="controls">
             <button id="startBtn">Iniciar</button>
             <button id="stopBtn">Parar</button>
@@ -128,8 +128,11 @@
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
 
-            timerDisplay.textContent =
-                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            // Mostra apenas um dígito para minutos quando for menor que 10
+            const minutesDisplay = minutes < 10 ? minutes.toString() : minutes.toString().padStart(2, '0');
+            const secondsDisplay = seconds.toString().padStart(2, '0');
+
+            timerDisplay.textContent = `${minutesDisplay}:${secondsDisplay}`;
 
             // Remove todas as classes de warning primeiro
             timerDisplay.classList.remove('warning-yellow', 'warning-red');
