@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cronômetro Gigante (7 minutos)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .timer {
+            font-size: 38rem;
+            font-weight: bold;
+            color: #000dff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            margin: 0;
+            line-height: 1;
+            transition: color 0.3s;
+        }
+
+        .controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: #444;
+            color: white;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        #startBtn {
+            background-color: #4CAF50;
+        }
+
+        #stopBtn {
+            background-color: #f44336;
+        }
+
+        #resetBtn {
+            background-color: #2196F3;
+        }
+
+        .warning-yellow {
+            color: #ffff00;
+            text-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+            animation: pulseYellow 0.5s infinite alternate;
+        }
+
+        .warning-red {
+            color: #ff0000;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            animation: pulseRed 0.5s infinite alternate;
+        }
+
+        @keyframes pulseYellow {
+            from {
+                color: #ffff00;
+                text-shadow: 0 0 20px rgba(255, 255, 0, 0.7);
+            }
+
+            to {
+                color: #ffcc00;
+                text-shadow: 0 0 30px rgba(255, 204, 0, 0.9);
+            }
+        }
+
+        @keyframes pulseRed {
+            from {
+                color: #ff0000;
+                text-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            }
+
+            to {
+                color: #ff4444;
+                text-shadow: 0 0 30px rgba(255, 68, 68, 0.9);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="timer" id="timer">00:00</h1>
+        <div class="controls">
+            <button id="startBtn">Iniciar</button>
+            <button id="stopBtn">Parar</button>
+            <button id="resetBtn">Resetar</button>
+        </div>
+    </div>
+
+    <script>
+        const timerDisplay = document.getElementById('timer');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let totalSeconds = 0;
+        const maxSeconds = 7 * 60; // 7 minutos em segundos
+        let timerInterval = null;
+
+        function updateDisplay() {
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+
+            timerDisplay.textContent =
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+            // Remove todas as classes de warning primeiro
+            timerDisplay.classList.remove('warning-yellow', 'warning-red');
+
+            // Adiciona efeitos conforme o tempo
+            const remainingSeconds = maxSeconds - totalSeconds;
+
+            if (remainingSeconds <= 30) {
+                // Vermelho nos últimos 30 segundos
+                timerDisplay.classList.add('warning-red');
+            } else if (remainingSeconds <= 60) {
+                // Amarelo nos últimos 60 segundos
+                timerDisplay.classList.add('warning-yellow');
+            }
+        }
+
+        function startTimer() {
+            if (timerInterval !== null) return;
+
+            timerInterval = setInterval(() => {
+                if (totalSeconds >= maxSeconds) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    return;
+                }
+
+                totalSeconds++;
+                updateDisplay();
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            totalSeconds = 0;
+            updateDisplay();
+        }
+
+        startBtn.addEventListener('click', startTimer);
+        stopBtn.addEventListener('click', stopTimer);
+        resetBtn.addEventListener('click', resetTimer);
+
+        // Inicializa o display
+        updateDisplay();
+    </script>
+</body>
+
+</html>
